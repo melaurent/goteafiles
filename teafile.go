@@ -235,6 +235,9 @@ func (tf *TeaFile) SeekItem(idx int64) error {
 	if tf.mode == os.O_WRONLY {
 		return fmt.Errorf("seeking in write mode not supported")
 	}
+	if tf.itemSection == nil {
+		return fmt.Errorf("no item section defined, cannot seek on item size")
+	}
 	_, err := tf.file.Seek(tf.header.ItemStart + idx * int64(tf.itemSection.Info.ItemSize), 0)
 	return err
 }
