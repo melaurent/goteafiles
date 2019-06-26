@@ -1,8 +1,8 @@
 package goteafiles
 
 import (
-	"fmt"
 	uuid "github.com/satori/go.uuid"
+	"os"
 	"reflect"
 	"testing"
 )
@@ -37,9 +37,12 @@ func TestWithDataType(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error creating TeaFile: %v", err)
 	}
-	fmt.Println(tf.itemSection)
 	if !reflect.DeepEqual(*tf.itemSection, fixture) {
 		t.Fatalf("got different content description")
+	}
+	err = os.Remove("test.tea")
+	if err != nil {
+		t.Fatalf("error deleting TeaFile: %v", err)
 	}
 }
 
@@ -54,9 +57,12 @@ func TestWithContentDescription(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error creating TeaFile: %v", err)
 	}
-	fmt.Println(tf.contentDescriptionSection)
 	if !reflect.DeepEqual(*tf.contentDescriptionSection, fixture) {
 		t.Fatalf("got different content description")
+	}
+	err = os.Remove("test.tea")
+	if err != nil {
+		t.Fatalf("error deleting TeaFile: %v", err)
 	}
 }
 
@@ -87,6 +93,10 @@ func TestWithNameValues(t *testing.T) {
 	if !reflect.DeepEqual(*tf.nameValueSection, fixture) {
 		t.Fatalf("got different content description")
 	}
+	err = os.Remove("test.tea")
+	if err != nil {
+		t.Fatalf("error deleting TeaFile: %v", err)
+	}
 }
 
 func TestWithTimeFields(t *testing.T) {
@@ -104,8 +114,11 @@ func TestWithTimeFields(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error creating TeaFile: %v", err)
 	}
-	fmt.Println(tf.timeSection)
 	if !reflect.DeepEqual(*tf.timeSection, fixture) {
 		t.Fatalf("got different content description")
+	}
+	err = os.Remove("test.tea")
+	if err != nil {
+		t.Fatalf("error deleting TeaFile: %v", err)
 	}
 }

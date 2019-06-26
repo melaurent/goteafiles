@@ -2,6 +2,7 @@ package goteafiles
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"testing"
 )
@@ -85,35 +86,29 @@ func TestCreate(t *testing.T) {
 			goldTf.timeSection,
 			tf.timeSection)
 	}
-
+	err = os.Remove("test.tea")
+	if err != nil {
+		t.Fatalf("error deleting TeaFile: %v", err)
+	}
 }
 
 func TestRead(t *testing.T) {
-	tf, err := OpenRead("test.tea", reflect.TypeOf(Data{}))
+	tf, err := OpenRead("test-fixtures/acme.tea", reflect.TypeOf(Data{}))
 	if err != nil {
 		t.Fatalf("error opening TeaFile: %v", err)
 	}
-	fmt.Println(tf.header)
-	fmt.Println(tf.itemSection)
-	fmt.Println(tf.nameValueSection)
-	fmt.Println(tf.contentDescriptionSection)
-	res, err := tf.Read()
+	_, err = tf.Read()
 	if err != nil {
 		t.Fatalf("error reading data: %v", err)
 	}
-	fmt.Println(res)
 }
 
 
 func TestMMapRead(t *testing.T) {
-	tf, err := OpenRead("acme.tea", reflect.TypeOf(Data{}))
+	tf, err := OpenRead("test-fixtures/acme.tea", reflect.TypeOf(Data{}))
 	if err != nil {
 		t.Fatalf("error opening TeaFile: %v", err)
 	}
-	fmt.Println(tf.header)
-	fmt.Println(tf.itemSection)
-	fmt.Println(tf.nameValueSection)
-	fmt.Println(tf.contentDescriptionSection)
 
 	r, err := tf.OpenReadableMapping()
 	if err != nil {
@@ -124,7 +119,6 @@ func TestMMapRead(t *testing.T) {
 	for i := 0; i < N; i++ {
 		ptr := r.GetItem(i)
 		item := (*Data)(ptr)
-		fmt.Println(item)
 		tmp = item.Volume
 	}
 	fmt.Println(tmp)
