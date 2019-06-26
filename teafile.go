@@ -165,9 +165,8 @@ func (tf *TeaFile) OpenReadableMapping() (*mmap.MMapReader, error) {
 	if tf.mode == os.O_WRONLY {
 		return nil, fmt.Errorf("memory mapping in write mode not supported")
 	}
-	_, err := tf.file.Seek(tf.header.ItemStart, 0)
-	if err != nil { return nil, err }
-	_, err = tf.file.Seek(0, 0)
+
+	_, err := tf.file.Seek(0, 0)
 	if err != nil { return nil, err }
 
 	var size int64
