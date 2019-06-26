@@ -10,7 +10,7 @@ import (
 	"unsafe"
 )
 
-// MMapReader reads a memory-mapped file.
+// MMapReader reads a memory-mapped tea file
 type MMapReader struct {
 	data     []byte
 	ptr      uintptr
@@ -29,17 +29,17 @@ func (r *MMapReader) Close() error {
 	return syscall.Munmap(data)
 }
 
-// Len returns the length of the underlying memory-mapped file.
+// Len returns the number of items in the memory mapped region
 func (r *MMapReader) Len() int {
 	return int(r.size / r.itemSize)
 }
 
-// ReadAt implements the io.ReaderAt interface.
+// GetItem returns a point to the item at index idx
 func (r *MMapReader) GetItem(idx int) unsafe.Pointer {
 	return unsafe.Pointer(r.ptr + uintptr(idx * int(r.itemSize)))
 }
 
-// Open memory-maps the named file for reading.
+// Open memory-maps the file for reading.
 func Open(f *os.File, offset int64, size int64, itemSize int64) (*MMapReader, error) {
 	fi, err := f.Stat()
 	if err != nil {
