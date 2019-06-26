@@ -37,7 +37,7 @@ var typeToNameValueType = map[string]int32 {
 	reflect.TypeOf(int32(1)).String()    : 1,
 	reflect.TypeOf(float64(1.2)).String(): 2,
 	reflect.TypeOf("dede").String()   : 3,
-	reflect.TypeOf(uuid.NewV1()).String(): 4,
+	reflect.TypeOf(uuid.UUID{}).String() : 4,
 	reflect.TypeOf(uint64(1)).String()   : 5,
 }
 
