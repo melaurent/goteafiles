@@ -22,3 +22,7 @@ func writeText(w io.Writer, order binary.ByteOrder, text string) error {
 	if err != nil { return err }
 	return binary.Write(w, order, bytes)
 }
+
+func textSize(text string) int64 {
+	return 4 + int64(len([]byte(text)))
+}

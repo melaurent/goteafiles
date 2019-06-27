@@ -52,9 +52,13 @@ func TestCreate(t *testing.T) {
 		t.Fatalf("error closing TeaFile: %v", err)
 	}
 
+	tf, err = OpenRead("test.tea", reflect.TypeOf(Data{}))
+	if err != nil {
+		t.Fatalf("error closing TeaFile: %v", err)
+	}
+
 	// Comparing with fixture
 	goldTf, err := OpenRead("test-fixtures/acme.tea", reflect.TypeOf(Data{}))
-
 	if err != nil {
 		t.Fatalf("error opening golden TeaFile: %v", err)
 	}
@@ -120,6 +124,31 @@ func TestMMapRead(t *testing.T) {
 		ptr := r.GetItem(i)
 		item := (*Data)(ptr)
 		tmp = item.Volume
+	}
+	fmt.Println(tmp)
+}
+
+func TestOBData(t *testing.T) {
+	type RawOrderBookLevel struct {
+		DeltaDeltaTime int16
+		DeltaPrice     int32
+		Quantity       uint64
+	}
+	tf, err := OpenRead("test-fixtures/27375862970.tea", reflect.TypeOf(RawOrderBookLevel{}))
+	if err != nil {
+		t.Fatalf("error opening TeaFile: %v", err)
+	}
+
+	r, err := tf.OpenReadableMapping()
+	if err != nil {
+		t.Fatalf("error mmapping file: %v", err)
+	}
+	var tmp uint64
+	N := r.Len()
+	for i := 0; i < N; i++ {
+		ptr := r.GetItem(i)
+		item := (*RawOrderBookLevel)(ptr)
+		tmp = item.Quantity
 	}
 	fmt.Println(tmp)
 }

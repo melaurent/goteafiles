@@ -72,10 +72,8 @@ func (is *ItemSection) Size() int64 {
 	var size int64 = 0
 	// ItemSize
 	size += 4
-	// ItemTypeNameBytes
-	size += 4
 	// ItemTypeName
-	size += int64(len([]byte(is.Info.ItemTypeName)))
+	size += textSize(is.Info.ItemTypeName)
 	// FieldCount
 	size += 4
 	for _, field := range is.Fields {
@@ -83,10 +81,8 @@ func (is *ItemSection) Size() int64 {
 		size += 4
 		// FieldOffset
 		size += 4
-		// FieldNameBytes
-		size += 4
 		// FieldName
-		size += int64(len([]byte(field.Name)))
+		size += textSize(field.Name)
 	}
 	return size
 }
@@ -145,6 +141,7 @@ func (nv *NameValueSection) Read(r io.Reader, order binary.ByteOrder) error {
 			if err != nil { return err }
 			nv.NameValues[name] = value
 
+
 		default:
 			return fmt.Errorf("unknown name value kind %d", kind)
 		}
@@ -175,16 +172,18 @@ func (nv *NameValueSection) Write(w io.Writer, order binary.ByteOrder) error {
 func (nv *NameValueSection) Size() int64 {
 	var size int64 = 0
 	// Count
-	size += 1
-	for key, val := range nv.NameValues {
-		// NameBytes
-		size += 1
+	size += 4
+	for name, val := range nv.NameValues {
 		// Name
-		size += int64(len([]byte(key)))
+		size += textSize(name)
 		// ValueType
-		size += 1
+		size += 4
 		// Value
-		size += int64(reflect.TypeOf(val).Size())
+		if reflect.TypeOf(val).Kind() == reflect.String {
+			size += textSize(val.(string))
+		} else {
+			size += int64(reflect.TypeOf(val).Size())
+		}
 	}
 	return size
 }
@@ -276,10 +275,7 @@ func (s *ContentDescriptionSection) Write(r io.Writer, order binary.ByteOrder) e
 
 func (s *ContentDescriptionSection) Size() int64 {
 	var size int64 = 0
-	// Description Bytes
-	size += 4
-	// Description
-	size += int64(len([]byte(s.ContentDescription)))
+	size += textSize(s.ContentDescription)
 
 	return size
 }
