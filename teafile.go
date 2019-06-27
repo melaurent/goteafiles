@@ -169,14 +169,8 @@ func (tf *TeaFile) OpenReadableMapping() (*mmap.MMapReader, error) {
 	_, err := tf.file.Seek(0, 0)
 	if err != nil { return nil, err }
 
-	var size int64
-	if tf.header.ItemEnd == 0 {
-		fi, err := tf.file.Stat()
-		if err != nil { return nil, err }
-		size = fi.Size() - tf.header.ItemStart
-	} else {
-		size = tf.header.ItemEnd - tf.header.ItemStart
-	}
+	size, err := tf.getItemAreaSize()
+	if err != nil { return nil, err }
 	if size == 0 {
 		return nil, fmt.Errorf("no data")
 	}
@@ -244,6 +238,27 @@ func (tf *TeaFile) SeekItem(idx int64) error {
 
 func (tf *TeaFile) Close() error {
 	return tf.file.Close()
+}
+
+func (tf *TeaFile) ItemCount() (int, error) {
+	areaSize, err := tf.getItemAreaSize()
+	if err != nil {
+		return 0, err
+	}
+	size := int(areaSize / int64(tf.itemSection.Info.ItemSize))
+	return size, nil
+}
+
+func (tf *TeaFile) getItemAreaSize() (int64, error) {
+	var size int64
+	if tf.header.ItemEnd == 0 {
+		fi, err := tf.file.Stat()
+		if err != nil { return 0, err }
+		size = fi.Size() - tf.header.ItemStart
+	} else {
+		size = tf.header.ItemEnd - tf.header.ItemStart
+	}
+	return size, nil
 }
 
 func (tf *TeaFile) readHeader() error {
