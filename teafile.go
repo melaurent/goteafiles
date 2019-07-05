@@ -161,6 +161,11 @@ func OpenWrite(fileName string, dataType reflect.Type) (*TeaFile, error) {
 	return tf, nil
 }
 
+func (tf *TeaFile) GetFileName() string {
+	return tf.fileName
+}
+
+
 func (tf *TeaFile) OpenReadableMapping() (*mmap.MMapReader, error) {
 	if tf.mode == os.O_WRONLY {
 		return nil, fmt.Errorf("memory mapping in write mode not supported")

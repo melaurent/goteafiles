@@ -134,7 +134,7 @@ func TestOBData(t *testing.T) {
 		DeltaPrice     int32
 		Quantity       uint64
 	}
-	tf, err := OpenRead("test-fixtures/27375862970.tea", reflect.TypeOf(RawOrderBookLevel{}))
+	tf, err := OpenRead("test-fixtures/27380280032.tea", reflect.TypeOf(RawOrderBookLevel{}))
 	if err != nil {
 		t.Fatalf("error opening TeaFile: %v", err)
 	}
@@ -148,6 +148,7 @@ func TestOBData(t *testing.T) {
 	for i := 0; i < N; i++ {
 		ptr := r.GetItem(i)
 		item := (*RawOrderBookLevel)(ptr)
+		fmt.Println(item)
 		tmp = item.Quantity
 	}
 	fmt.Println(tmp)
