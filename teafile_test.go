@@ -127,29 +127,3 @@ func TestMMapRead(t *testing.T) {
 	}
 	fmt.Println(tmp)
 }
-
-func TestOBData(t *testing.T) {
-	type RawOrderBookLevel struct {
-		DeltaDeltaTime int16
-		DeltaPrice     int32
-		Quantity       uint64
-	}
-	tf, err := OpenRead("test-fixtures/27380280032.tea", reflect.TypeOf(RawOrderBookLevel{}))
-	if err != nil {
-		t.Fatalf("error opening TeaFile: %v", err)
-	}
-
-	r, err := tf.OpenReadableMapping()
-	if err != nil {
-		t.Fatalf("error mmapping file: %v", err)
-	}
-	var tmp uint64
-	N := r.Len()
-	for i := 0; i < N; i++ {
-		ptr := r.GetItem(i)
-		item := (*RawOrderBookLevel)(ptr)
-		fmt.Println(item)
-		tmp = item.Quantity
-	}
-	fmt.Println(tmp)
-}

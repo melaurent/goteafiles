@@ -139,7 +139,7 @@ func OpenRead(fileName string, dataType reflect.Type) (*TeaFile, error) {
 }
 
 func OpenWrite(fileName string, dataType reflect.Type) (*TeaFile, error) {
-	f, err := os.OpenFile(fileName, os.O_RDWR, 0666)
+	f, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil { return nil, err }
 
 	tf := &TeaFile{
