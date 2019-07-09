@@ -165,6 +165,13 @@ func (tf *TeaFile) GetFileName() string {
 	return tf.fileName
 }
 
+func (tf *TeaFile) GetNameValues() map[string]interface{} {
+	if tf.nameValueSection != nil {
+		return tf.nameValueSection.NameValues
+	} else {
+		return nil
+	}
+}
 
 func (tf *TeaFile) OpenReadableMapping() (*mmap.MMapReader, error) {
 	if tf.mode == os.O_WRONLY {
