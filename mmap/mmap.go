@@ -12,10 +12,11 @@ import (
 
 // MMapReader reads a memory-mapped tea file
 type MMapReader struct {
-	data     []byte
-	ptr      uintptr
-	size     int64
-	itemSize int64
+	ItemCount int
+	data      []byte
+	ptr       uintptr
+	size      int64
+	itemSize  int64
 }
 
 // Close closes the reader.
@@ -66,7 +67,12 @@ func Open(f *os.File, offset int64, size int64, itemSize int64) (*MMapReader, er
 	}
 
 	ptr := uintptr(unsafe.Pointer(&data[0])) + uintptr(offset)
-	r := &MMapReader{data, ptr, size, itemSize}
+	r := &MMapReader{
+		ItemCount: int(size / itemSize),
+		data: data,
+		ptr: ptr,
+		size: size,
+		itemSize: itemSize}
 
 	runtime.SetFinalizer(r, (*MMapReader).Close)
 	return r, nil
